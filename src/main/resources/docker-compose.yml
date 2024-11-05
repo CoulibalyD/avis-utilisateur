@@ -1,0 +1,42 @@
+# Fichier docker-compose.yml pour configurer une base de données MariaDB, Adminer (interface de gestion), et un serveur SMTP de développement
+
+services:
+  # Service de la base de données MariaDB
+  db:
+    # Nom unique du conteneur MariaDB pour éviter les conflits
+    container_name: mariadb-db
+    # Image spécifique de MariaDB (version 11.2.5-jammy)
+    image: mariadb:11.2.5-jammy
+    # Redémarre toujours automatiquement si le conteneur s'arrête
+    restart: always
+    environment:
+      # Mot de passe pour l'utilisateur root (administrateur) de MariaDB
+      MARIADB_ROOT_PASSWORD: example
+    ports:
+      - 3308:3306
+
+  # Service Adminer, une interface web pour gérer MariaDB
+  adminer:
+    # Nom unique du conteneur Adminer pour éviter les conflits
+    container_name: adminer-standalone
+    # Image spécifique d'Adminer (version 4.8.1-standalone)
+    image: adminer:4.8.1-standalone
+    # Redémarre toujours automatiquement si le conteneur s'arrête
+    restart: always
+    # Expose le port 9080 sur l'hôte et le mappe au port 8080 du conteneur
+    ports:
+      - 9080:8080
+
+  # Service SMTP4DEV, un serveur SMTP pour tester l'envoi d'emails en développement
+  smtp4dev:
+    # Nom unique pour le conteneur SMTP4DEV
+    container_name: smtp4dev-server
+    # Image SMTP4DEV (version v3)
+    image: rnwood/smtp4dev:v3
+    # Redémarre toujours automatiquement si le conteneur s'arrête
+    restart: always
+    ports:
+      # Interface web SMTP4DEV accessible sur le port 9081 de l'hôte
+      - 9081:80
+      # Serveur SMTP accessible sur le port 9025 de l'hôte pour envoyer des emails de test
+      - 9025:25
