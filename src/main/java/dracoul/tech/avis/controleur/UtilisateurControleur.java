@@ -45,6 +45,7 @@ public class UtilisateurControleur {
         );
 
        if(authenticate.isAuthenticated()) {
+           log.info("____Generation token Success____");
            return this.jwtService.generate(authentificationDto.email());
        }
         log.info("____Connexion Success____");

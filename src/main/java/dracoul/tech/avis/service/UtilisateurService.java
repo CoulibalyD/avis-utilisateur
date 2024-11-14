@@ -6,7 +6,6 @@ import dracoul.tech.avis.entite.Utilisateur;
 import dracoul.tech.avis.entite.Validation;
 import dracoul.tech.avis.repository.UtilisateurRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

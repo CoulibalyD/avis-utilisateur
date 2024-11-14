@@ -13,9 +13,16 @@ public class AvisControleur {
 
     private final AvisService avisService;
 
+    @GetMapping("/find/{id}")
+    public Avis findById(@PathVariable int id) {
+        return this.avisService.findById(id);
+    }
+
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void creer(@RequestBody Avis avis) {
         this.avisService.creer(avis);
     }
+
 }
