@@ -1,5 +1,6 @@
-package dracoul.tech.avis.securite;
+package dracoul.tech.avis.security;
 
+import dracoul.tech.avis.entity.Jwt;
 import dracoul.tech.avis.service.UtilisateurService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,18 +26,26 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = null;
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String token ;
+        Jwt tokenDansLaBDD = null;
         String email = null;
         Boolean isTokenExpired = true;
 
         final String authorization = request.getHeader("Authorization");
         if (authorization != null && authorization.startsWith("Bearer ")) {
             token = authorization.substring(7);
+            tokenDansLaBDD = this.jwtService.tokenByValue(token);
             isTokenExpired = jwtService.isTokenExpired(token);
             email = jwtService.extractEmail(token);
         }
-        if(!isTokenExpired && email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if(!isTokenExpired
+                //&& email != null
+                &&  tokenDansLaBDD.getUtilisateur().getEmail().equals(email)
+                && SecurityContextHolder.getContext().getAuthentication() == null
+        ) {
            UserDetails userDetails = utilisateurService.loadUserByUsername(email);
            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
            SecurityContextHolder.getContext().setAuthentication(authenticationToken);

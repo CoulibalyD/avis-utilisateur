@@ -1,6 +1,6 @@
 package dracoul.tech.avis.repository;
 
-import dracoul.tech.avis.entite.Validation;
+import dracoul.tech.avis.entity.Validation;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

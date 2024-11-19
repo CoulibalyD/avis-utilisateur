@@ -1,10 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>avis-utilisateur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avis utilisateur!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #8fc2f3;
+            margin: 0;
+            padding: 0;
+        }
+        .mail-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #88005c; /* Couleur d'arrière-plan bleu */
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #404040;
+        }
+        .header img {
+            width: 100px; /* Largeur du logo */
+            height: 100px; /* Hauteur du logo */
+            margin-bottom: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #007BFF; /* Couleur d'arrière-plan vert */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #000080; /* Couleur plus foncée au survol */
+        }
+    </style>
 </head>
 <body>
+<div class="mail-container">
+    <div class="header">
 
+        <!--<img src="https://amasem.loga-apps.com/assets/images/logos/amasem.png" alt="Logo de l'entreprise"> --> <!-- Remplace par le lien de ton logo -->
+        <h1>Bienvenue, <span th:text="${lastName}">Utilisateur</span>!</h1>
+    </div>
+    <div class="content">
+        <p>Bonjour <span th:text="${lastName} ">Nom</span>,</p>
+        <p>Merci de nous avoir rejoints ! Nous sommes ravis de vous accueillir dans notre communauté.</p>
+        <p>Pour commencer, votre code d'activation:<b> <br> <span th:text="${code}">Code</span> </br> </b></p>
+        <a href="https://amasem.loga-apps.com" class="btn">Commencer</a>
+    </div>
+    <div class="footer">
+        &copy; 2024 Fixe: 20 23 26 87 - Tous droits réservés.<br>
+        Hamdallaye ACI 2000 près du siege de la CANAM <br>
+        Copyright &copy; 2024 Log@ engineering
+        <a href="http://site.loga-apps.com">Loga-Engineering</a>.
+    </div>
+</div>
 </body>
 </html>

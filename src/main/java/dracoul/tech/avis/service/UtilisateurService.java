@@ -1,10 +1,11 @@
 package dracoul.tech.avis.service;
 
 import dracoul.tech.avis.TypeRole;
-import dracoul.tech.avis.entite.Role;
-import dracoul.tech.avis.entite.Utilisateur;
-import dracoul.tech.avis.entite.Validation;
+import dracoul.tech.avis.entity.Role;
+import dracoul.tech.avis.entity.Utilisateur;
+import dracoul.tech.avis.entity.Validation;
 import dracoul.tech.avis.repository.UtilisateurRepository;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +25,7 @@ public class UtilisateurService implements UserDetailsService {
     private ValidationService validationService;
     private BCryptPasswordEncoder passwordEncoder;
 
-    public void saves(Utilisateur utilisateur) {
+    public void save(Utilisateur utilisateur) throws MessagingException {
         if(!utilisateur.getEmail().contains("@")){
             throw new RuntimeException("Votre Email est invalide");
         }
@@ -62,5 +63,9 @@ public class UtilisateurService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email)  throws UsernameNotFoundException {
 
         return this.utilisateurRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Aucun utilisateur ne correspond à cet identifiant"));
+    }
+    public void deleteUser(int id){
+         utilisateurRepository.deleteUtilisateurById(id)
+                .orElseThrow(()-> new RuntimeException("Utilisateur "+id+" n'existe pas"));
     }
 }

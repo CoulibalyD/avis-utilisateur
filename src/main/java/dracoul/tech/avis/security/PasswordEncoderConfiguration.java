@@ -1,4 +1,4 @@
-package dracoul.tech.avis.securite;
+package dracoul.tech.avis.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

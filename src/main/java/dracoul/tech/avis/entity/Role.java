@@ -1,4 +1,4 @@
-package dracoul.tech.avis.entite;
+package dracoul.tech.avis.entity;
 import dracoul.tech.avis.TypeRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

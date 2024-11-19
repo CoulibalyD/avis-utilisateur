@@ -1,6 +1,6 @@
-package dracoul.tech.avis.controleur;
+package dracoul.tech.avis.controller;
 
-import dracoul.tech.avis.entite.Avis;
+import dracoul.tech.avis.entity.Avis;
 import dracoul.tech.avis.service.AvisService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RequestMapping("avis")
 @RestController
-public class AvisControleur {
+public class AvisController {
 
     private final AvisService avisService;
 
@@ -23,6 +23,10 @@ public class AvisControleur {
     @PostMapping
     public void creer(@RequestBody Avis avis) {
         this.avisService.creer(avis);
+    }
+    @PostMapping(path = "delete/{id}")
+    public void delete(@PathVariable int id) {
+        avisService.deleteAvis(id);
     }
 
 }

@@ -1,7 +1,7 @@
 package dracoul.tech.avis.service;
 
-import dracoul.tech.avis.entite.Utilisateur;
-import dracoul.tech.avis.entite.Validation;
+import dracoul.tech.avis.entity.Utilisateur;
+import dracoul.tech.avis.entity.Validation;
 import dracoul.tech.avis.repository.ValidationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,14 +1,11 @@
 package dracoul.tech.avis.service;
 
-import dracoul.tech.avis.TypeRole;
-import dracoul.tech.avis.entite.Avis;
-import dracoul.tech.avis.entite.Role;
-import dracoul.tech.avis.entite.Utilisateur;
+import dracoul.tech.avis.entity.Avis;
+import dracoul.tech.avis.entity.Utilisateur;
+import dracoul.tech.avis.exception.AvisNotFoundException;
 import dracoul.tech.avis.repository.AvisRepository;
-import dracoul.tech.avis.repository.UtilisateurRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,7 +24,11 @@ public class AvisService {
     }
 
     public Avis findById(int id) {
-        Optional<Avis> avis = this.avisRepository.findById(id);
-        return avis.orElse(null);
+       return this.avisRepository.findById(id)
+               .orElseThrow(() -> new AvisNotFoundException("Avis avec l'ID" +id + "n'a pas été trouvé "));
+    }
+
+    public void deleteAvis(int id) {
+        avisRepository.deleteAvisById(id);
     }
 }
