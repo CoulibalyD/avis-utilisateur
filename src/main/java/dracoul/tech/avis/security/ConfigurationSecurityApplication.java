@@ -57,7 +57,7 @@ public class ConfigurationSecurityApplication {
                         authorize ->
                                 authorize
                                         .requestMatchers(POST, "/inscription", "/activation", "/connexion", "delete/**").permitAll()  // Autorise sans authentification les POST sur ces endpoints
-                                        .requestMatchers(GET, "/avis/find/**").permitAll()  // Autorise les GET vers "/avis/find/**"
+                                        .requestMatchers(GET, "/avis/find/**", "/getUser", "/api/find/**").permitAll()  // Autorise les GET vers "/avis/find/**"
                                         .anyRequest().authenticated()  // Exige une authentification pour toute autre requête
                 )
                 .sessionManagement(sessionConfig ->

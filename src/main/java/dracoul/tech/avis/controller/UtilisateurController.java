@@ -7,13 +7,17 @@ import dracoul.tech.avis.service.UtilisateurService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -34,6 +38,7 @@ public class UtilisateurController {
         }
         log.info("____Inscription Success____");
     }
+
     @PostMapping(path = "activation")
     public void activation(@RequestBody Map<String, String> activation) {
         this.utilisateurService.activation(activation);
@@ -53,8 +58,17 @@ public class UtilisateurController {
         log.info("____Connexion Success____");
         return null;
     }
+
+    @PostMapping(path = "deconnexion")
+    public void deconnexion() {
+        this.jwtService.deconnexion();
+        log.info("____deconnexion Success____");
+    }
+
     @PostMapping(path = "delete/{id}")
     public void delete(@PathVariable("id") int id) {
         utilisateurService.deleteUser(id);
     }
+
+
 }

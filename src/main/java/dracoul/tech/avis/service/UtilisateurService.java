@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,6 +47,11 @@ public class UtilisateurService implements UserDetailsService {
         this.validationService.enregistrer(utilisateur);
 
     }
+    public Optional<Utilisateur> findUser(String email) {
+        return Optional.ofNullable(this.utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("email n'existe pas")));
+    }
+
 
     public void activation(Map<String, String> activation) {
         Validation validation = this.validationService.lireEnfonctionDuConde(activation.get("code"));
@@ -68,4 +74,9 @@ public class UtilisateurService implements UserDetailsService {
          utilisateurRepository.deleteUtilisateurById(id)
                 .orElseThrow(()-> new RuntimeException("Utilisateur "+id+" n'existe pas"));
     }
+
+    public void deconnexion() {
+    }
+
+
 }

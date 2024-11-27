@@ -38,6 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authorization != null && authorization.startsWith("Bearer ")) {
             token = authorization.substring(7);
             tokenDansLaBDD = this.jwtService.tokenByValue(token);
+            System.out.println(tokenDansLaBDD.toString());
             isTokenExpired = jwtService.isTokenExpired(token);
             email = jwtService.extractEmail(token);
         }
