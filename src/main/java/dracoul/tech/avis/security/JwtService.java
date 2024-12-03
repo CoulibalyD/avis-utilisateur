@@ -1,6 +1,7 @@
 package dracoul.tech.avis.security;
 
 import dracoul.tech.avis.entity.Jwt;
+import dracoul.tech.avis.entity.RefreshToken;
 import dracoul.tech.avis.entity.Utilisateur;
 import dracoul.tech.avis.repository.JwtRepository;
 import dracoul.tech.avis.service.UtilisateurService;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,8 @@ import static io.jsonwebtoken.Jwts.*;
 @AllArgsConstructor
 public class JwtService {
     public static final String BEARER = "bearer";
+    public static final String REFRESH = "refresh";
+    public static final String TOKEN_INCORRECT = "Token incorrect";
     private final String ENCRYPTION_KEY = "4527aafcd5ca9013e42b4ee99ce02f890682dee9f5e5b604b2fbe5316807667c";
     private UtilisateurService utilisateurService;
     private JwtRepository jwtRepository;
@@ -40,7 +44,7 @@ public class JwtService {
                 value,
                 false,
                 false
-        ) .orElseThrow(() -> new RuntimeException("Token incorrect"));
+        ) .orElseThrow(() -> new RuntimeException("Token invalid ou incorrect"));
     }
    /**
     * public Jwt tokenByValue(String value) {
@@ -56,10 +60,20 @@ public class JwtService {
         ).collect(Collectors.toList());
         this.jwtRepository.saveAll(jwtList);
     }
+
+
+
     public Map<String, String> generate(String email){
         Utilisateur utilisateur = (Utilisateur) this.utilisateurService.loadUserByUsername(email);
         this.disableTokens(utilisateur);
-        Map<String, String> jwtMap = this.generateJwt(utilisateur);
+        Map<String, String> jwtMap = new java.util.HashMap<>(this.generateJwt(utilisateur));
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .valeur(UUID.randomUUID().toString())
+                .expired(false)
+                .creation(Instant.now())
+                .expiration(Instant.now().plusMillis(30 * 60 * 1000))
+                .build();
 
         Jwt jtw = Jwt
                 .builder()
@@ -67,8 +81,11 @@ public class JwtService {
                 .desactivated(false)
                 .expired(false)
                 .utilisateur(utilisateur)
+                .refreshToken(refreshToken)
                 .build();
+
         this.jwtRepository.save(jtw);
+        jwtMap.put(REFRESH, refreshToken.getValeur());
         return jwtMap;
     }
 
@@ -124,16 +141,28 @@ public class JwtService {
         Jwt jwt = this.jwtRepository.findUserValidToken(
                 utilisateur.getEmail(),
                 false,
-                false).orElseThrow(() -> new RuntimeException("Token incorrect")
+                false).orElseThrow(() -> new RuntimeException(TOKEN_INCORRECT)
         );
         jwt.setExpired(true);
         jwt.setDesactivated(true);
         this.jwtRepository.save(jwt);
     }
-    @Scheduled(cron = "@daily")
+   // @Scheduled(cron = "@daily")
+
    // @Scheduled(cron = "0 */1 * * * *")
     public void removeUselessJwt(){
         log.info("Suppression des token à {}", Instant.now());
         this.jwtRepository.deleteAllByExpiredAndDesactivated(true, true);
+    }
+
+    public Map<String, String> refreshToken(Map<String, String> refreshTokenRequest) {
+        Jwt jwt = this.jwtRepository.findRefreshTokenValeur(refreshTokenRequest.get(REFRESH))
+                .orElseThrow(() -> new RuntimeException(TOKEN_INCORRECT));
+        if(jwt.getRefreshToken().isExpired() || jwt.getRefreshToken().getExpiration().isBefore(Instant.now())){
+            throw new RuntimeException(TOKEN_INCORRECT);
+        }
+        Map<String, String> tokens = this.generate(jwt.getUtilisateur().getEmail());
+        this.disableTokens(jwt.getUtilisateur());
+       return tokens;
     }
 }

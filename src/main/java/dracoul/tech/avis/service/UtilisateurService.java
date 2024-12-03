@@ -1,12 +1,13 @@
 package dracoul.tech.avis.service;
 
-import dracoul.tech.avis.TypeRole;
+import dracoul.tech.avis.enums.TypeRole;
 import dracoul.tech.avis.entity.Role;
 import dracoul.tech.avis.entity.Utilisateur;
 import dracoul.tech.avis.entity.Validation;
 import dracoul.tech.avis.repository.UtilisateurRepository;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,10 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class UtilisateurService implements UserDetailsService {
@@ -37,14 +40,24 @@ public class UtilisateurService implements UserDetailsService {
         if(utilisateurOptional.isPresent()){
             throw new RuntimeException("Votre Email est utilisé");
         }
-        Role roleUtilisateur = new Role();
-        roleUtilisateur.setLibelle(TypeRole.UTILISATEUR);
-        utilisateur.setRole(roleUtilisateur);
 
         String mdpCrypter = this.passwordEncoder.encode(utilisateur.getPassword());
         utilisateur.setMdp(mdpCrypter);
+
+        Role roleUtilisateur = new Role();
+        roleUtilisateur.setLibelle(TypeRole.UTILISATEUR);
+        if(utilisateur.getRole() != null && utilisateur.getRole().getLibelle().equals(TypeRole.ADMINISTRATEUR)){
+            roleUtilisateur.setLibelle(TypeRole.ADMINISTRATEUR);
+            utilisateur.setActive(true);
+        }
+
+        utilisateur.setRole(roleUtilisateur);
+
         utilisateur = this.utilisateurRepository.save(utilisateur);
-        this.validationService.enregistrer(utilisateur);
+
+        if(roleUtilisateur.getLibelle().equals(TypeRole.UTILISATEUR)){
+            this.validationService.enregistrer(utilisateur);
+        }
 
     }
     public Optional<Utilisateur> findUser(String email) {
@@ -65,18 +78,38 @@ public class UtilisateurService implements UserDetailsService {
         this.utilisateurRepository.save(utilisateurActiver);
     }
 
-    @Override
     public UserDetails loadUserByUsername(String email)  throws UsernameNotFoundException {
 
-        return this.utilisateurRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Aucun utilisateur ne correspond à cet identifiant"));
+        return this.utilisateurRepository.findByEmail(email).orElseThrow(()->
+                new UsernameNotFoundException("Aucun utilisateur ne correspond à cet identifiant"));
     }
+
+    public void modifierMotDePasse(Map<String, String> parametres) {
+        Utilisateur utilisateur = (Utilisateur) this.loadUserByUsername(parametres.get("email"));
+            this.validationService.enregistrer(utilisateur);
+    }
+
+    public void nouveauMotDePasse(Map<String, String> parametres) {
+        Utilisateur utilisateur =(Utilisateur) this.loadUserByUsername(parametres.get("email"));
+        Validation validation = validationService.lireEnfonctionDuConde(parametres.get("code"));
+        if(validation.getUtilisateur().getEmail().equals(utilisateur.getEmail())){
+            String mdpCrypter = this.passwordEncoder.encode(parametres.get("password"));
+            utilisateur.setMdp(mdpCrypter);
+            this.utilisateurRepository.save(utilisateur);
+        }
+    }
+
     public void deleteUser(int id){
-         utilisateurRepository.deleteUtilisateurById(id)
+        utilisateurRepository.deleteUtilisateurById(id)
                 .orElseThrow(()-> new RuntimeException("Utilisateur "+id+" n'existe pas"));
     }
 
-    public void deconnexion() {
+
+    public List<Utilisateur> list() {
+        Iterable<Utilisateur> utilisateurIterable = this.utilisateurRepository.findAll();
+        List utilisateurs = new ArrayList();
+
+        utilisateurIterable.forEach(utilisateur -> utilisateurs.add(utilisateur));
+        return utilisateurs;
     }
-
-
 }

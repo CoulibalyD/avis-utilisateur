@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -30,5 +31,9 @@ public class AvisService {
 
     public void deleteAvis(int id) {
         avisRepository.deleteAvisById(id);
+    }
+
+    public List<Avis> liste() {
+        return this.avisRepository.findAll();
     }
 }

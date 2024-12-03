@@ -1,0 +1,82 @@
+###
+//Incription de l'utilisateur
+POST http://localhost:9191/api/inscription
+Content-Type: application/json
+
+{
+  "nom": "Dramane Coulibaly",
+  "email": "dramane.coulibalyd636@gmail.com",
+  "mdp": "Dracoul10"
+}
+
+###
+//Inscription d'administrateur
+POST http://localhost:9191/api/inscription
+Content-Type: application/json
+
+{
+  "nom": "Jean Besse",
+  "email": "jeanadmin@gmail.com",
+  "mdp": "jean",
+  "role": {
+    "libelle": "ADMINISTRATEUR"
+  }
+}
+
+###
+//Jean Besse Connexion
+POST http://localhost:9191/api/connexion
+Content-Type: application/json
+
+{
+  "email": "jeanadmin@gmail.com",
+  "password": "jean"
+}
+
+###
+//Activation de compte
+POST http://localhost:9191/api/activation
+Content-Type: application/json
+
+{
+  "code": 756335
+}
+
+###
+// Connexion
+POST http://localhost:9191/api/connexion
+Content-Type: application/json
+
+{
+  "email": "dramane@gmail.com",
+  "password": "dramane"
+}
+
+###
+//administrateur Connexion
+POST http://localhost:9191/api/connexion
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin"
+}
+
+###
+//manager Connexion
+POST http://localhost:9191/api/connexion
+Content-Type: application/json
+
+{
+  "email": "manager@gmail.com",
+  "password": "manager"
+}
+
+###
+//Recuperer tout les utilisateurs seulement l'admi
+@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJub20iOiJEcmFtYW5lIENvdWxpYmFseSIsInN1YiI6ImRyYW1hbmVAZ21haWwuY29tIiwiZXhwIjoxNzMzMjMzNDkzfQ.OrP1banS7qbMdwTbaUFQKutkIh5KZx8YNpofgR6rpzw
+GET http://localhost:9191/api/utilisateur
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+###
+

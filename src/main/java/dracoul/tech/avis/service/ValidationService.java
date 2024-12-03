@@ -18,21 +18,30 @@ public class ValidationService {
     private NotificationService notificationService;
 
     public void enregistrer(Utilisateur utilisateur) {
-        Validation validation = new Validation();
-        validation.setUtilisateur(utilisateur);
+        // Vérifie si une validation existe déjà pour cet utilisateur
+        Validation validation = validationRepository.findByUtilisateur(utilisateur)
+                .orElse(new Validation()); // Si aucune validation, en crée une nouvelle
+
+        // Génère les nouvelles valeurs
         Instant creation = Instant.now();
+        validation.setUtilisateur(utilisateur);
         validation.setCreation(creation);
-        Instant expiration = creation.plus(10, ChronoUnit.MINUTES);
-        validation.setExpiration(expiration);
+        validation.setExpiration(creation.plus(10, ChronoUnit.MINUTES));
 
-        Random random = new Random();
-        int randomInt = random.nextInt(999999);
-        String code = String.format("%04d", randomInt);
-
+        // Génère un code unique
+        String code;
+        do {
+            code = String.format("%06d", new Random().nextInt(999999));
+        } while (validationRepository.findByCode(code).isPresent());
         validation.setCode(code);
-        this.validationRepository.save(validation);
+
+        // Sauvegarde ou met à jour
+        validationRepository.save(validation);
+
+        // Envoie la notification
         this.notificationService.envoyer(validation);
     }
+
 
     public Validation lireEnfonctionDuConde(String code) {
        return this.validationRepository.findByCode(code).orElseThrow(()-> new RuntimeException("Votre code est invalide"));

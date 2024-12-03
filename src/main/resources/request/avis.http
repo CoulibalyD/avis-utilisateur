@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:9191/api
+@userToken = eyJhbGciOiJIUzI1NifyfyufuyfkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJub20iOiJKZWFuIEJlc3NlIiwic3ViIjoiamVhbmFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTczMzIzMjA4MX0.GHH3TvTniZ02gFZDkiyhGWbky3jzLEBNN2txklbcYhg
+### Création d'un avis
+POST {{baseUrl}}/avis
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "message": "Dracoul is the ....!",
+  "status": "Valider"
+}
+
+### Afficher la liste des avis (Admin uniquement)
+GET {{baseUrl}}/avis
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}

@@ -11,16 +11,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
 @Service
 public class JwtFilter extends OncePerRequestFilter {
 
-    private UtilisateurService utilisateurService;
-    private JwtService jwtService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+    private final UtilisateurService utilisateurService;
+    private final JwtService jwtService;
 
-    public JwtFilter(UtilisateurService utilisateurService, JwtService jwtService) {
+    public JwtFilter(HandlerExceptionResolver handlerExceptionResolver, UtilisateurService utilisateurService, JwtService jwtService) {
+        this.handlerExceptionResolver = handlerExceptionResolver;
         this.utilisateurService = utilisateurService;
         this.jwtService = jwtService;
     }
@@ -29,29 +32,33 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String token ;
+        String token;
         Jwt tokenDansLaBDD = null;
         String email = null;
-        Boolean isTokenExpired = true;
+        boolean isTokenExpired = true;
+        try {
+            final String authorization = request.getHeader("Authorization");
+            if (authorization != null && authorization.startsWith("Bearer ")) {
+                token = authorization.substring(7);
+                tokenDansLaBDD = this.jwtService.tokenByValue(token);
+                System.out.println(tokenDansLaBDD.toString());
+                isTokenExpired = jwtService.isTokenExpired(token);
+                email = jwtService.extractEmail(token);
+            }
+            if(!isTokenExpired
+                    //&& email != null
+                    &&  tokenDansLaBDD.getUtilisateur().getEmail().equals(email)
+                    && SecurityContextHolder.getContext().getAuthentication() == null
+            ) {
+                UserDetails userDetails = utilisateurService.loadUserByUsername(email);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
+            filterChain.doFilter(request, response);
+        }catch (Exception exception){
+            this.handlerExceptionResolver.resolveException(request, response, null, exception);
+        }
 
-        final String authorization = request.getHeader("Authorization");
-        if (authorization != null && authorization.startsWith("Bearer ")) {
-            token = authorization.substring(7);
-            tokenDansLaBDD = this.jwtService.tokenByValue(token);
-            System.out.println(tokenDansLaBDD.toString());
-            isTokenExpired = jwtService.isTokenExpired(token);
-            email = jwtService.extractEmail(token);
-        }
-        if(!isTokenExpired
-                //&& email != null
-                &&  tokenDansLaBDD.getUtilisateur().getEmail().equals(email)
-                && SecurityContextHolder.getContext().getAuthentication() == null
-        ) {
-           UserDetails userDetails = utilisateurService.loadUserByUsername(email);
-           UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-           SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
-        filterChain.doFilter(request, response);
     }
 
 }

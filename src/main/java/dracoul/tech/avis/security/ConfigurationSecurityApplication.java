@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -24,6 +26,7 @@ import static org.springframework.http.HttpMethod.POST;
  * et les autorisations pour les requêtes HTTP de l'application.
  */
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 public class ConfigurationSecurityApplication {
 
@@ -56,8 +59,11 @@ public class ConfigurationSecurityApplication {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers(POST, "/inscription", "/activation", "/connexion", "delete/**").permitAll()  // Autorise sans authentification les POST sur ces endpoints
-                                        .requestMatchers(GET, "/avis/find/**", "/getUser", "/api/find/**").permitAll()  // Autorise les GET vers "/avis/find/**"
+                                        .requestMatchers(POST, "/inscription", "/activation",
+                                                                "/connexion", "/delete/**",
+                                                                    "/modifier", "/nouveau", "/refresh-token").permitAll()  // Autorise sans authentification les POST sur ces endpoints
+                                        .requestMatchers(GET,  "/getUser", "/api/find/**").permitAll()  // Autorise les GET vers "/avis/find/**"
+                                        .requestMatchers(GET,"/avis").hasAnyAuthority("ROLE_ADMINISTRATEUR", "ROLE_MANAGER")
                                         .anyRequest().authenticated()  // Exige une authentification pour toute autre requête
                 )
                 .sessionManagement(sessionConfig ->

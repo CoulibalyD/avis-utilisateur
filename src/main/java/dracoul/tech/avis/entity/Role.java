@@ -1,11 +1,9 @@
 package dracoul.tech.avis.entity;
-import dracoul.tech.avis.TypeRole;
+import dracoul.tech.avis.enums.TypeRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

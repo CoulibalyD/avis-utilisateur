@@ -19,6 +19,9 @@ public class Jwt {
     private String value;
     private boolean desactivated;
     private boolean expired;
+    @OneToOne (cascade = {CascadeType.PERSIST, CascadeType.REMOVE })
+    private RefreshToken refreshToken;
+
     @ManyToOne (cascade = {CascadeType.DETACH, CascadeType.MERGE} )
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;

@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-
+@Builder
 @Entity
 @Table(name = "Utilisateurs")
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class Utilisateur implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role.getLibelle()));
+        return this.role.getLibelle().getAuthorities();
     }
 
     @Override
