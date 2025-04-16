@@ -1,0 +1,75 @@
+Voici une liste des **commandes Docker les plus couramment utilisées**,
+utiles pour le développement, le déploiement,
+la gestion des conteneurs, images et volumes :
+
+---
+
+### 🚀 **Commandes de base**
+
+| Commande | Description |
+|---------|-------------|
+| `docker --version` | Affiche la version de Docker |
+| `docker info` | Donne les infos du système Docker (conteneurs, images, etc.) |
+| `docker help` | Liste les commandes disponibles avec Docker |
+
+---
+
+### 🐳 **Conteneurs**
+
+| Commande | Description |
+|---------|-------------|
+| `docker ps` | Liste les conteneurs en cours d'exécution |
+| `docker ps -a` | Liste tous les conteneurs (y compris arrêtés) |
+| `docker run IMAGE` | Lance un nouveau conteneur à partir d'une image |
+| `docker run -it IMAGE bash` | Lance un conteneur en mode interactif avec bash |
+| `docker stop CONTAINER` | Arrête un conteneur |
+| `docker start CONTAINER` | Démarre un conteneur |
+| `docker restart CONTAINER` | Redémarre un conteneur |
+| `docker rm CONTAINER` | Supprime un conteneur |
+| `docker exec -it CONTAINER bash` | Exécute bash dans un conteneur en cours |
+| `docker logs CONTAINER` | Affiche les logs d’un conteneur |
+
+---
+
+### 🖼️ **Images**
+
+| Commande | Description |
+|----------|-------------|
+| `docker images` | Liste les images locales |
+| `docker pull IMAGE` | Télécharge une image depuis Docker Hub |
+| `docker build -t NOM_IMAGE .` | Crée une image depuis un Dockerfile |
+| `docker rmi IMAGE` | Supprime une image |
+
+---
+
+### 📦 **Volumes et réseaux**
+
+| Commande | Description |
+|---------|-------------|
+| `docker volume ls` | Liste les volumes Docker |
+| `docker volume rm NOM_VOLUME` | Supprime un volume |
+| `docker network ls` | Liste les réseaux Docker |
+| `docker network rm NOM_RESEAU` | Supprime un réseau |
+
+---
+
+### 📋 **Docker Compose**
+
+| Commande | Description |
+|----------|-------------|
+| `docker-compose up` | Démarre les services définis dans `docker-compose.yml` |
+| `docker-compose up --build` | Reconstruit les images avant de démarrer |
+| `docker-compose down` | Arrête et supprime les conteneurs, réseaux et volumes |
+| `docker-compose ps` | Liste les conteneurs gérés par Compose |
+
+---
+
+### 🧹 **Nettoyage**
+
+| Commande | Description |
+|----------|-------------|
+| `docker system prune` | Supprime tous les objets inutilisés (conteneurs, volumes, images) |
+| `docker volume prune` | Supprime tous les volumes inutilisés |
+| `docker image prune` | Supprime toutes les images inutilisées |
+
+---

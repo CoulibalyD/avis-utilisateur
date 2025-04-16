@@ -12,6 +12,7 @@ services:
     environment:
       # Mot de passe pour l'utilisateur root (administrateur) de MariaDB
       MARIADB_ROOT_PASSWORD: example
+      MARIADB_DATABASE: avis-utilisateurs
     ports:
       - 3308:3306
 

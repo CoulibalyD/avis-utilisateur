@@ -74,9 +74,9 @@ Content-Type: application/json
 
 ###
 //Recuperer tout les utilisateurs seulement l'admi
-@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJub20iOiJEcmFtYW5lIENvdWxpYmFseSIsInN1YiI6ImRyYW1hbmVAZ21haWwuY29tIiwiZXhwIjoxNzMzMjMzNDkzfQ.OrP1banS7qbMdwTbaUFQKutkIh5KZx8YNpofgR6rpzw
-GET http://localhost:9191/api/utilisateur
+@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJub20iOiJBZG1pbiIsInN1YiI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NDgxNzMyMn0.WhvcmHx8LRzyJSES0_UQeo_Mpf-6b3bLZrvQPYGIsQU
+GET {{basUrl}}/utilisateur
 Content-Type: application/json
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{token}}
 ###
 
